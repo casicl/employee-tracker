@@ -48,6 +48,15 @@ inquirer
         if (responses.options=== "add role") {
             addRole()
         }
+
+        if (responses.options=== "add employee") {
+            addEmployee()
+        }
+
+        if (responses.options=== "update employee") {
+            updateEmployee()
+        }
+        
     })
 
 };
@@ -100,10 +109,13 @@ function addDepartment() {
         });
     }
 
+
+
+        
 function addRole() {
     db.query("SELECT name FROM departments", (err, results)=> {
         const departmentNames = results.map(({ name }) => ({
-            name: name,
+            name: name
             
         }));
 
@@ -147,13 +159,65 @@ function addRole() {
 
         });
 
-        
-
-
 
 
     });
     
+}
+
+function addEmployee() {
+    inquirer
+        .prompt(
+            [{
+                type: "input",
+                message: "What is the employee's first name?",
+                name: "first_name"
+            },
+            {
+                type: "input",
+                message: "What is the employee's last name?",
+                name: "last-name"
+            },
+            {
+                type: "list",
+                message: "What is the employee's role?",
+                name: "role"
+                //figure out how to list roles???
+                //choices: roles
+            },
+            {
+                type: "list",
+                message: "Who is the employee's manager?",
+                name: "manager"
+                //figure out how to list 
+                //choices: manager
+            }]
+        )
+}
+
+function updateEmployee() {
+    inquirer
+        .prompt(
+            [
+            {
+                type: "list",
+                message: "Which employee would you like to update?",
+                name: "employeeId",
+                //get employee list
+                //choices: employeeList
+
+            },
+            {
+                type: "list",
+                message: "What is the employee's new role?",
+                name: "employeeRole",
+                //get roles list
+                choices: employeeRoles
+            }
+
+            ]
+          
+        )
 }
 
 mainMenu();
