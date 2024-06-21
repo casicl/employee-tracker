@@ -113,9 +113,10 @@ function addDepartment() {
 
         
 function addRole() {
-    db.query("SELECT name FROM departments", (err, results)=> {
-        const departmentNames = results.map(({ name }) => ({
-            name: name
+    db.query("SELECT name FROM department;", (err, results)=> {
+        const departmentNames = results.map(({ name, id }) => ({
+            name: name,
+            id : id
             
         }));
 
@@ -142,10 +143,18 @@ function addRole() {
         )
         .then((response) => {
             const { title, salary, department } = response;
-
-            const departmentId = results.find(result => result.name===department).id;
+            let departmentId
+           switch(department) {
+            case "ACCOUNTING": departmentId=1;
+            case "SALES": departmentId=2;
+            case "IT": departmentId=3;
+            case "MANAGEMENT": departmentId=4;
+            case "Legal": departmentId=5;
+            case "Manufacturing": departmentId=6;
+           }
 
             function createRole(title, salary, departmentId) {
+                
                 return db.promise().query("INSERT INTO role SET ?", { 
                     title: title,
                     salary: salary,
