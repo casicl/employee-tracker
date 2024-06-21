@@ -113,11 +113,15 @@ function addDepartment() {
 
         
 function addRole() {
-    db.query("SELECT name FROM department;", (err, results)=> {
-        const departmentNames = results.map(({ name, id }) => ({
-            name: name,
-            id : id
-            
+    db.query("SELECT id, name FROM department;", (err, results)=> {
+        
+            if (err) {
+                console.log(err);
+                return;
+            }
+            const departmentNames = results.map(({ id, name}) => ({
+                name: name,
+                value: id
         }));
 
         inquirer   
@@ -134,7 +138,7 @@ function addRole() {
             },
             {
                 type: "list",
-                name: "department",
+                name: "departmentId",
                 message: "Which department does this role belong in?",
                 choices: departmentNames
             }
@@ -142,31 +146,26 @@ function addRole() {
             ]
         )
         .then((response) => {
-            const { title, salary, department } = response;
-            let departmentId
-           switch(department) {
-            case "ACCOUNTING": departmentId=1;
-            case "SALES": departmentId=2;
-            case "IT": departmentId=3;
-            case "MANAGEMENT": departmentId=4;
-            case "Legal": departmentId=5;
-            case "Manufacturing": departmentId=6;
-           }
-
-            function createRole(title, salary, departmentId) {
-                
-                return db.promise().query("INSERT INTO role SET ?", { 
-                    title: title,
-                    salary: salary,
-                    department_id: departmentId
-                 });
-            }
+            const { title, salary, departmentId } = response;
             createRole(title, salary, departmentId)
             .then(()=> console.log(`Added ${title} to the department`))
             .catch((error)=> console.error(error))
             .then(() => mainMenu());
-
         });
+    
+  
+
+});
+}
+            function createRole(title, salary, departmentId) {
+                
+                return db.promise().query("INSERT INTO role SET ?", { 
+                    
+                    title: title,
+                    salary: salary,
+                    department_id: departmentId
+                    
+            
 
 
 
