@@ -67,13 +67,16 @@ function viewDepartments() {
   
     db.query(sql, (err, rows) => {
     console.table(rows)
-    });
+    mainMenu();
+    })
+    
 }
 
 function viewRoles() {
     const sql = `SELECT * FROM role`
     db.query(sql, (err, rows) => {
         console.table(rows)
+        mainMenu();
         });
 }
 
@@ -81,6 +84,7 @@ function viewEmployees() {
     const sql = `SELECT * FROM employee`
     db.query(sql, (err, rows) => {
         console.table(rows)
+        mainMenu();
         });
 }
 
@@ -228,7 +232,7 @@ function addEmployee() {
             createEmployee(first_name, last_name, role, manager)
             .then(()=> console.log(`Added ${first_name} ${last_name} to employees`))
             .catch((error)=>console.error(error))
-            .then(()=>mainMenu);
+            .then(() => mainMenu())
         });
     });
 });
@@ -240,7 +244,10 @@ function addEmployee() {
             last_name: lastName,
             role_id: role,
             manager_id: manager 
+
+            
         });
+        
     }
 
 function updateEmployee() {
