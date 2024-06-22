@@ -251,6 +251,26 @@ function addEmployee() {
     }
 
 function updateEmployee() {
+    db.query("SELECT id, first_name, last_name FROM employee;", (err, results)=> {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        const employeeList = results.map(({id, first_name, last_name}) => ({
+                value: id,
+                name: `${first_name} ${last_name}`
+        }));
+       
+       db.query("SELECT id, title FROM role;", (err, results)=> {
+        if(err) {
+            console.log(err);
+            return;
+        }
+        roles = results.map(({id, title})=> ({
+            name: title,
+            value: id
+        }));
+       
     inquirer
         .prompt(
             [
@@ -259,7 +279,7 @@ function updateEmployee() {
                 message: "Which employee would you like to update?",
                 name: "employeeId",
                 //get employee list
-                //choices: employeeList
+                choices: employeeList
 
             },
             {
@@ -267,12 +287,29 @@ function updateEmployee() {
                 message: "What is the employee's new role?",
                 name: "employeeRole",
                 //get roles list
-                choices: employeeRoles
+                choices: roles
             }
 
             ]
           
         )
-}
 
+    .then((response)=> {
+        const { employeeId, employeeRole} = response;
+        updateRole( employeeId, employeeRole)
+        .then(()=> console.log(`Updated employee's role`))
+        .catch((error)=>console.error(error))
+        .then(()=> mainMenu())
+       });
+       
+    });
+});
+}
+function updateRole(employeeId, roleId) {
+    return db.promise().query("UPDATE employee SET role_id = ? WHERE id =?", 
+        [roleId, employeeId]
+            
+    );
+
+}
 mainMenu();
