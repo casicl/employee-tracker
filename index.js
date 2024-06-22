@@ -174,6 +174,28 @@ function addRole() {
 }
 
 function addEmployee() {
+    
+    db.query("SELECT id, title FROM role;", (err, results)=> {
+        if (err) {
+            console.log(err);
+            return; 
+        }
+        const roles = results.map(({ id, title }) => ({
+            name: title,
+            value: id
+        }));
+       
+    db.query("SELECT id, first_name, last_name FROM employee;", (err,results)=> {
+        if (err) {
+            console.log(err);
+            return;
+        }
+        managers = results.map(({id, first_name, last_name})=> ({
+            value: id,
+
+            name: `${first_name} ${last_name}`
+        }));
+    
     inquirer
         .prompt(
             [{
@@ -184,24 +206,42 @@ function addEmployee() {
             {
                 type: "input",
                 message: "What is the employee's last name?",
-                name: "last-name"
+                name: "last_name"
             },
             {
                 type: "list",
                 message: "What is the employee's role?",
-                name: "role"
+                name: "role",
                 //figure out how to list roles???
-                //choices: roles
+                choices: roles
             },
             {
                 type: "list",
                 message: "Who is the employee's manager?",
-                name: "manager"
+                name: "manager",
                 //figure out how to list 
-                //choices: manager
+                choices: managers
             }]
         )
+        .then((response) => {
+            const { first_name, last_name, role, manager } = response;
+            createEmployee(first_name, last_name, role, manager)
+            .then(()=> console.log(`Added ${first_name} ${last_name} to employees`))
+            .catch((error)=>console.error(error))
+            .then(()=>mainMenu);
+        });
+    });
+});
 }
+    function createEmployee(firstName, lastName, role, manager) {
+        return db.promise().query("INSERT INTO employee SET ?", {
+
+            first_name: firstName,
+            last_name: lastName,
+            role_id: role,
+            manager_id: manager 
+        });
+    }
 
 function updateEmployee() {
     inquirer
