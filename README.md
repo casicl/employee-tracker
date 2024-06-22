@@ -15,7 +15,7 @@ https://drive.google.com/file/d/1DbBmiaPFHDrv2Hm6yvfyudlNp10D1VuK/view?usp=shari
 
 ## Credits
 
-Asked many questions of the learning assistance and also had access to the solved version.
+Asked many questions of the learning assistant and also had access to the solved version.
 
 ## License
 
